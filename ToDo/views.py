@@ -5,7 +5,6 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-import jwt
 from datetime import datetime, timedelta
 
 from django.contrib.auth import authenticate, login
@@ -23,25 +22,18 @@ def show_json(request):
 @csrf_exempt
 def post_data(request):
     if request.method == "POST":
-        print(request.body)
         body = json.loads(request.body)
-        print(body.get("message_data"))
         message_data = body.get("message_data")
         date_data = body.get("date_data")
         category = body.get("category")
-
         chosenCategory = Category.objects.get(pk=category)
-        print(chosenCategory.category_data)
-
         new_messsage = ToDoMessage(message_data = message_data, date_data=date_data, category=chosenCategory)
-        print(new_messsage.category.category_data)
         new_messsage.save()
         return HttpResponse()
     
 @csrf_exempt
 def delete_data(request):
     if request.method == "POST":
-        print(request.body)
         body = json.loads(request.body)
         chosenData = ToDoMessage.objects.get(pk=body["pk"])
         chosenData.delete()
